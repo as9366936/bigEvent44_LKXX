@@ -68,7 +68,7 @@
                 //     Authorization:window.localStorage.getItem('token')
                 // },
                 success: function (backData) {
-                    console.log(backData);
+                    // console.log(backData);
                     if (backData.code == 200) {
                         $('.user_info>span').text(backData.data.nickname);
                         $('.user_info>img').attr('src', backData.data.userPic);
