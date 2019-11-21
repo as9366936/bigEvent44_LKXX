@@ -209,6 +209,55 @@
     <script src="./js/template-web.js"></script>
     <script src="./js/jquery-1.12.4.min.js"></script>
 
+    <!-- 文章详情info模板 -->
+    <script id="info_temp" type="text/html">
+        {{data.author}} 发布于 {{data.date}}&nbsp;&nbsp;&nbsp;分类: {{data.category}}&nbsp;&nbsp;&nbsp;阅读:
+            ({{data.read}})&nbsp;&nbsp;&nbsp;评论: ({{data.comments}})
+    </script>
+
+    <script>
+        // 入口函数
+        $(function () {
+            // 1. 获取通过url传递过来的文章id
+            var id = window.location.search.split('=')[1];
+            // 2. 根据这个文章的id发送ajax请求,获取到文章的详细信息
+            $.ajax({
+                url: 'http://localhost:8080/api/v1/index/article',
+                data: {
+                    id: id
+                },
+                success: function (backData) {
+                    console.log(backData);
+                    if (backData.code == 200) {
+                        //3.把文章信息显示在页面对应的标签上
+                        $('.breadcrumb a').eq(1).text(backData.data.category); //分类
+                        $('.article_title').text(backData.data.title); //文章标题
+                        $('.article_con').html(backData.data.content); //文章内容
+                        if (backData.data.prev != null) {
+                            $('.article_links a').eq(0).text(backData.data.prev.title); //上一篇文章标题
+                            $('.article_links a').eq(0).attr('href', './article.html?id=' + backData
+                                .data.prev.id); //上一篇文章id
+                        } else {
+                            $('.article_links a').eq(0).text('没有啦!');
+                        }
+
+                        if (backData.data.next != null) {
+                            $('.article_links a').eq(1).text(backData.data.next.title); //下一篇文章标题
+                            $('.article_links a').eq(1).attr('href', './article.html?id=' + backData
+                                .data.next.id); //下一篇文章id
+                        } else {
+                            $('.article_links a').eq(1).text('没有啦!');
+                        }
+
+                        var resHtml = template('info_temp', backData);
+                        $('.article_info').html(resHtml);
+
+                    }
+                }
+            });
+        });
+    </script>
+
 </body>
 
 </html>
